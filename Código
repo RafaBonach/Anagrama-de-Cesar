@@ -1,0 +1,329 @@
+algoritmo embaralhadorCesar;
+// Síntese
+//  Objetivo:  Receber uma ou mais palavras ou frases, cifrá-las seguindo a cifra de Cesar e embraralhar esse conjunto de palavras seguido uma certa chave;
+//  Entrada : Palavras que serão cifradas e embraralhadas;
+//  Saída   : Escrever o código resutante dessa cifra se os procedimentos estiverem corretos ou dar uma mensagem de erro se tiver incorreto;
+
+
+principal
+	// Declarações
+	// 1) Declarar todas as variavies que serão usadas no codigo;
+	texto palavras[20], palacif[20], opcoes, opcoesM, codigo, repalavras[20], frase;
+	inteiro salto, chaveemb, i, j, qtdPalavras, vetLetras[20], fim1, qtdLetras, regular, tamanhoPalavra, caracterNumero, letranum, pose;
+	logico controle, controleFra;
+	caracter fim, numeroCaracter, letra;
+
+	// Instruções
+	// 2)Criar um loop para ficar repetindo a sequencia de informações;
+
+	controle = verdadeiro;
+	faca
+		//2.1) Inicio do codigo, boas vindas!;
+		escreval("-----> Bem vindo(a) ao embaralhador de Cesar! <-----");
+		escreval("--> Você deseja codificar ou decodificar uma palavras?");
+		escreva("=> ");
+		leia(opcoes);
+		escreval("");
+		opcoesM = maiusculo(opcoes);
+
+		//2.2)estrutura de comparação de codificar ou decodificar;
+		se(comparaTexto(opcoesM, "CODIFICAR") == 0)entao
+			escreval("--> Para começar, digite a quantidade de palavras que serão digitadas!");
+			escreval("-> DIgite um valor inferior a 20");
+			escreva("=> ");
+			leia(qtdPalavras);
+			escreval("");
+
+			// 2.2.1)Se codificar, determinar se a quantidade de palavras é igual ou inferior a 20;
+			se(qtdPalavras <= 20) entao
+
+				//2.2.1.1) Ler o salto da Cifra de Cesar;
+				se(qtdPalavras > 0)entao
+					escreval("--> Agora, digite o salto da cifra de Cesar que será usada!");
+					escreva("=> ");
+					leia(salto);
+					escreval("");
+
+					//2.2.1.1.1)Ler a frase a ser cifrada;
+					se(salto > 0)entao
+						escreval("--> Por fim, digite a frase a ser cifrada.");
+						escreval("->ATENÇÃO: Pela falta de acentos e caracteres especiais na tabela Ascii, não digite letras com acentos ou caracteres especiais como o (ç)");
+						escreva("=> ");
+						leia(frase);
+						escreval("");
+
+						//2.2.1.1.1.1)Estrutura de repetição para criar os vetores e inserir as palavras nos mesmos;
+						qtdLetras = tamanhoTexto(frase);
+						pose = 0;
+						para(i de 0 ate qtdPalavras - 1 passo 1) faca
+							palavras[i] = "";
+							controleFra = verdadeiro;
+							enquanto(controleFra == verdadeiro e pose < qtdLetras) faca
+								letranum = caracterAscii(caracterTexto(frase, pose));
+								se(letranum == 32)entao
+									controleFra = falso;
+									pose = pose + 1;
+								senao
+									letra = asciiCaracter(letranum);
+									palavras[i] = palavras[i] + letra;
+									pose = pose + 1;
+								fimSe
+							fimEnquanto
+						fimPara
+
+						//2.2.1.1.1.2)Orientação das palavras codificadas na cifra de cesar
+						para(i de 0 ate qtdPalavras-1 passo 1) faca
+							palacif[i] = cifraCesar(palavras[i], salto);
+							vetLetras[i] = tamanhoTexto(palacif[i]);
+						fimPara
+
+						//2.2.1.1.1.3) Resultado da codificação
+						escreval("--> O código é:");
+						escreval("->", anagrama(palacif, vetLetras, qtdPalavras));
+						escreval("");
+
+						//2.2.1.1.1.4) Fim da codificação perguntnado se deseja continuar codificando e determinando respostas invalidas
+						fim1 = 0;
+						enquanto(fim1 != 83 e fim1 != 78) faca
+							escreval("--> VOCÊ CONTINUAR USANDO O EMBARALHADOR DE CESAR?");
+							escreval("(Digite S para CONTINUAR ou N para SAIR)");
+							escreva("=> ");
+							leiaCaracter(fim);
+							escreval("");
+							fim1 = caracterAscii(maiusculoCaracter(fim));
+							se(fim1 == 83) entao
+								controle = verdadeiro;
+							senao
+								se(fim1 == 78) entao
+									controle = falso;
+								senao
+									escreval("-> Resposta Inválida");
+									escreval("");
+								fimSe
+							fimSe
+						fimEnquanto
+
+						//2.2.1.1.2) Caso a estrutura anterior saia do padrão, valor da resposta incorreto;
+					senao
+						escreval("-> Procedimento Invalido, digite uma chave maior que 0");
+						escreval("");
+					fimSe
+
+					//2.2.1.2) Caso a estrutura anterior saia do padrão, valor da resposta incorreto;
+				senao
+					escreval("-> Quantidade invalida, digite um valor igual ou inferior a 20!");
+					escreval("");
+				fimSe
+
+				//2.2.2) Caso a estrutura anterior saia do padrão, valor da resposta incorreto;
+			senao
+				escreval("-> Procedimento Invalido, digite uma chave maior que 0");
+				escreval("");
+			fimSe
+
+			//2.3) Caso o usuário deseje decodificar alguma palavra;
+		senao
+
+			//2.3.1)Determinação das variáveis decodificadoras.
+			se(comparaTexto(opcoesM, "DECODIFICAR") == 0)entao
+				escreval("--> Digite a quantidade de palavras que serão decifradas:");
+				escreva("=> ");
+				leia(qtdPalavras);
+				escreval("");
+				escreval("--> Agora, digite o salto da cifra de Cesar:");
+				escreva("=> ");
+				leia(salto);
+				escreval("");
+				escreval("Digite a palavra que você deseja descriptografar:");
+				escreva("=> ");
+				leia(codigo);
+				escreval("");
+
+				//2.3.2)Determinação dos vetores;
+				qtdLetras = tamanhoTexto(codigo);
+				regular = 0;
+				para(i de 0 ate qtdPalavras - 1 passo 1) faca
+					repalavras[i] = "";
+					palacif[i] = "";
+				fimPara
+
+				//2.3.3)Orientação das palavras em espaços do vetor;
+				faca
+					para(i de 0 ate qtdPalavras-1 passo 1) faca
+						repalavras[i] = repalavras[i] + caracterTexto(codigo, regular);
+						regular = regular + 1;
+					fimPara
+				enquanto(regular < qtdLetras);
+
+				//2.3.4)Retirada das | das palavras;
+				para(i de 0 ate qtdPalavras-1 passo 1) faca
+					regular = 0;
+					tamanhoPalavra = tamanhoTexto(repalavras[i]);
+					para(j de 0 ate tamanhoPalavra-1 passo 1) faca
+						caracterNumero = caracterAscii(caracterTexto(repalavras[i], regular));
+						se(caracterNumero != 124) entao
+							numeroCaracter = asciiCaracter(caracterNumero);
+							palacif[i] = palacif[i] + numeroCaracter;
+						fimSe
+						regular = regular + 1;
+					fimPara
+				fimPara
+
+				//2.3.5)Resultado da decodificação;
+				cesarDescif(palacif, salto, qtdPalavras);
+				escreval("");
+
+				//2.3.6)Fim da codificação perguntnado se deseja continuar codificando e determinando respostas invalidas;
+				fim1 = 0;
+				enquanto(fim1 != 83 e fim1 != 78) faca
+					escreval("VOCÊ DESEJA CONTINUAR USANDO O EMBARALHADOR DE CESAR?");
+					escreval("(Digite S para CONTINUAR ou N para SAIR)");
+					escreva("=> ");
+					leiaCaracter(fim);
+					escreval("");
+
+					fim1 = caracterAscii(maiusculoCaracter(fim));
+					se(fim1 == 83) entao
+						controle = verdadeiro;
+					senao
+						se(fim1 == 78) entao
+							controle = falso;
+						senao
+							escreval("-> Resposta Inválida");
+							escreval("");
+						fimSe
+					fimSe
+				fimEnquanto
+
+				//2.4)Se todas as estruturas anteriores forem falsas, resposta inválida.
+			senao
+				escreval("-> Opção invalida, digite Codificar se você quiser codificar um conjunto de palavras ou decodificar se quiser decodificar um conjunto de palavras");
+				escreval("");
+			fimSe
+		fimSe
+	enquanto(controle == verdadeiro);
+
+fimPrincipal
+
+//3)Função que cifra as palavras seguindo a cifra de Cesar;
+funcao texto cifraCesar(texto palavra,inteiro chave1)
+	//Declarações
+	// 3.1) Declarar todas as variavies que serão usadas na Cifra de Cesar;
+	inteiro i, textoTam, embaralhar, tabelaAscii, restoSub;
+	texto carac, cript;
+	caracter carcinicial;
+
+	//Instruções
+	//3.2) Definir o valor inicial das variaveis;
+	carac = "";
+	textoTam = tamanhoTexto(palavra);
+
+	//3.3) Embaralhador da cifra de Cesar
+	para(i de 0 ate textoTam-1 passo 1) faca
+		carcinicial = caracterTexto(palavra, i);
+		tabelaAscii =  caracterAscii(carcinicial);
+		embaralhar = tabelaAscii + chave1;
+
+		//3.3.1) se o valor for maior ou igual a 122 na tabela Ascii, o codigo subtrai a quantidade a quantidade de saltos já realizados e acrescenta no valor 33, valor inicial da tabela Ascii;
+		se(embaralhar > 122)entao
+			restoSub = embaralhar - 122;
+			embaralhar = 33 + restoSub;
+		fimSe
+		carac = carac + asciiCaracter(embaralhar);
+	fimPara
+
+	//3.4)Retorna a letra saltada;
+	retorna carac;
+
+fimFuncao
+
+//4)Função do anagrama;
+funcao texto anagrama(texto palavrascif[], inteiro vetqtdLetras[], inteiro qtdPalavras)
+	//Declarações
+	//4.1) Declarar todas as variavies que serão usadas no anagrama;
+	texto textoresult;
+	inteiro i, j, qtdLetras, letras,regular, diferenca;
+	caracter caracterUnico;
+
+	//Intruções
+	//4.2) Definir o valor inicial das variaveis;
+	letras = tamanhoTexto(palavrascif[0]);
+
+	//4.3) Determinação da quantidade de letras em cada vetor;
+	para(i de 0 ate qtdPalavras-1 passo 1) faca
+		qtdLetras = tamanhoTexto(palavrascif[i]);
+		se(qtdLetras > letras)entao
+			letras = qtdLetras;
+		fimSe
+	fimPara
+	regular = 0;
+	textoresult = "";
+
+	//4.4) Inserção do caracter | em relação a quantidade de letras faltantes comparando a palavra com a maior palavra;
+	para(i de 0 ate qtdPalavras - 1 passo 1)faca
+		diferenca = letras - vetqtdLetras[i];
+		para(j de 0 ate diferenca - 1 passo 1) faca
+			palavrascif[i]  = palavrascif[i] + asciiCaracter(124);
+		fimPara
+	fimPara
+
+	//4.5) Ordenação em uma unica palavra juntamente com o embaralhamento dos caracteres da palavra;
+	para(i de 0 ate letras-1 passo 1) faca
+		para(j de 0 ate qtdPalavras-1 passo 1) faca
+			textoresult = textoresult + caracterTexto(palavrascif[j], regular);
+		fimPara
+		regular = regular + 1;
+	fimPara
+
+	//4.6)a palavra cifrada;
+	retorna textoresult;
+fimFuncao
+
+//5) desembaralhador
+procedimento cesarDescif(texto conjunto[], inteiro codigo, inteiro qtdPalavras)
+	//Declarações
+	//5.1) Declarar todas as variavies que serão usadas no desembaralhador;
+	inteiro i, j , embaralhar, tabelaAscii, textoTam, desembaralhar, palavrasTam[20], restoSub;
+	texto carac, palavra, descriptografado[20], frase;
+	caracter carcinicial, desembaralharCar;
+
+	//Instruções
+	//5.2) Definir o valor inicial das variaveis;
+	carac = "";
+	frase = "";
+	textoTam = 0;
+	para(i de 0 ate	qtdPalavras - 1 passo 1) faca
+		descriptografado[i] = "";
+		palavrasTam[i] = 0;
+	fimPara
+
+	//5.3) Decodificador;
+	para(i de 0 ate qtdPalavras-1 passo 1) faca
+		palavrasTam[i] = tamanhoTexto(conjunto[i]);
+		palavra = conjunto[i];
+
+		//5.3.1) Recebida as palavras, hora de desembaralhar as letras em um vetor;
+		para(j de 0 ate palavrasTam[i]-1 passo 1) faca
+			carcinicial = caracterTexto(palavra, j);
+			tabelaAscii =  caracterAscii(carcinicial);
+			desembaralhar = tabelaAscii - codigo;
+			se(desembaralhar < 33)entao
+				restoSub = 33 - desembaralhar;
+				desembaralhar = 122 - restoSub;
+			fimSe
+			desembaralharCar = asciiCaracter(desembaralhar);
+			descriptografado[i] = descriptografado[i] + desembaralharCar;
+		fimPara
+
+		//5.3.2) Ordenação das palavras em uma Frase;
+		se(i == qtdPalavras-1)entao
+			frase = frase + descriptografado[i];
+		senao
+			frase = frase + descriptografado[i] + " ";
+		fimSe
+	fimPara
+
+	//5.4) Retorno da frase descriptogradada;
+	escreval("--> A frase descriptografada é:");
+	escreval("=> ", frase);
+fimProcedimento
